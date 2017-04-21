@@ -6,7 +6,7 @@
 #define PIN 6
 #define OBPIN 8
 
-#define NUM_LEDS 60
+#define NUM_LEDS 8
 
 #define BRIGHTNESS 50
 
@@ -49,8 +49,44 @@ void setup() {
 }
 
 void loop() {
+  long randTime;
+  randTime = random(5);
+  //rainbowCycle(5);
+  spinRainbow(randTime);
+  randTime = random(5);
+  reverseRainbow(randTime);
+}
 
-  rainbowCycle(5);
+void spinRainbow(int cycles){
+  int i, j;
+
+  for(j=0; j<256 * cycles; j++) { // 5 cycles of all colors on wheel
+    for(i = 0; i < strip.numPixels(); i++) {
+      uint32_t wheel = Wheel(((i * 256 / strip.numPixels()) + j) & 255);
+      strip.setPixelColor(i, wheel);
+      strip2.setPixelColor(i, wheel);//Wheel(gamma[j+i]));
+
+      strip2.show();
+      strip.show();
+    }
+  }
+}
+
+void reverseRainbow(int cycles){
+  int i, j, k;
+  k = 0;
+
+  for(j=0; j<256 * cycles; j++) { // 5 cycles of all colors on wheel
+    for(i = strip.numPixels() - 1; i > -1; i--) {
+      uint32_t wheel = Wheel(((k * 256 / strip.numPixels()) + j) & 255);
+      strip.setPixelColor(i, wheel);
+      strip2.setPixelColor(i, wheel);//Wheel(gamma[j+k]));
+
+      k++;
+      strip2.show();
+      strip.show();
+    }
+  }
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout
